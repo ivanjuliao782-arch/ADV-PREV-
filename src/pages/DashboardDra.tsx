@@ -165,67 +165,85 @@ export default function DashboardDra() {
           {loadingData ? (
              <div className="flex justify-center py-20"><Loader2 className="animate-spin text-gold" size={48} /></div>
           ) : (
-            <table className="w-full text-left border-collapse min-w-[800px]">
-              <thead>
-                <tr className="border-b border-white/10 text-text-muted text-sm uppercase tracking-wider">
-                  <th className="pb-4 font-medium">Data</th>
-                  <th className="pb-4 font-medium">Lead</th>
-                  <th className="pb-4 font-medium">Resumo do Perfil</th>
-                  <th className="pb-4 font-medium">Status</th>
-                  <th className="pb-4 font-medium text-right">Ação</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
+            <div className="space-y-4">
+              {/* Cabeçalho - Só aparece em telas médias/grandes (PC) */}
+              <div className="hidden md:grid grid-cols-5 gap-4 px-4 py-3 border-b border-white/10 text-text-muted text-sm uppercase tracking-wider font-medium">
+                <div>Data</div>
+                <div>Lead</div>
+                <div>Resumo do Perfil</div>
+                <div>Status</div>
+                <div className="text-right">Ação</div>
+              </div>
+
+              <div className="space-y-4">
                 {filteredLeads.map((lead) => (
-                  <tr key={lead.id} className="hover:bg-white/5 transition-colors">
-                    <td className="py-4 text-sm text-text-muted whitespace-nowrap">
-                      {new Date(lead.created_at).toLocaleDateString('pt-BR')} <br/>
-                      <span className="text-xs">{new Date(lead.created_at).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</span>
-                    </td>
-                    <td className="py-4">
+                  <div key={lead.id} className="bg-white/5 border border-white/5 p-4 rounded-2xl flex flex-col md:grid md:grid-cols-5 md:items-center gap-4 transition-colors hover:bg-white/10">
+                    
+                    {/* Bloco 1: Cabecalho do Card Mobile = Nome + Data */}
+                    <div className="flex justify-between items-start md:block">
+                      <div className="md:hidden">
+                        <p className="text-white font-bold text-xl mb-1">{lead.name || 'Sem nome'}</p>
+                        <p className="text-gold font-medium">{lead.phone || 'Sem telefone'}</p>
+                      </div>
+                      <div className="text-sm text-text-muted text-right md:text-left">
+                        {new Date(lead.created_at).toLocaleDateString('pt-BR')} <br className="hidden md:block"/>
+                        <span className="text-xs">{new Date(lead.created_at).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</span>
+                      </div>
+                    </div>
+
+                    {/* Bloco 2: Nome e Telefone (PC apenas) */}
+                    <div className="hidden md:block">
                       <p className="text-white font-medium">{lead.name || 'Sem nome'}</p>
                       <p className="text-gold text-sm">{lead.phone || 'Sem telefone'}</p>
-                    </td>
-                    <td className="py-4 text-sm text-text-light/80">
-                      <p><strong>Profissão:</strong> {lead.answers['1'] || '-'}</p>
-                      <p><strong>Aposentou em:</strong> {lead.answers['3'] || '-'}</p>
-                      <p><strong>Múltiplos vínculos:</strong> {lead.answers['4'] || '-'}</p>
-                    </td>
-                    <td className="py-4">
+                    </div>
+
+                    {/* Bloco 3: Resumo das Respostas */}
+                    <div className="text-sm text-text-light/80 bg-navy/30 md:bg-transparent p-3 md:p-0 rounded-xl">
+                      <p><strong className="text-white/60">Profissão:</strong> {lead.answers['1'] || '-'}</p>
+                      <p><strong className="text-white/60">Aposentou em:</strong> {lead.answers['3'] || '-'}</p>
+                      <p><strong className="text-white/60">Múltiplos vínculos:</strong> {lead.answers['4'] || '-'}</p>
+                    </div>
+
+                    {/* Bloco 4: Controle de Status */}
+                    <div>
                       <select 
                         value={lead.status || 'Novo'}
                         onChange={(e) => updateStatus(lead.id, e.target.value)}
-                        className={`bg-transparent border rounded-lg px-2 py-1 text-sm font-medium outline-none
+                        className={`bg-transparent border rounded-xl px-3 py-2 md:py-1 w-full md:w-auto text-sm font-medium outline-none cursor-pointer
                           ${lead.status === 'Novo' ? 'border-blue-400 text-blue-400' : 
                             lead.status === 'Em Atendimento' ? 'border-yellow-400 text-yellow-400' : 
                             'border-emerald-400 text-emerald-400'}`}
                       >
-                        <option className="bg-navy" value="Novo">Novo</option>
-                        <option className="bg-navy" value="Em Atendimento">Em Atendimento</option>
-                        <option className="bg-navy" value="Fechado">Fechado</option>
+                        <option className="bg-navy" value="Novo">Status: Novo</option>
+                        <option className="bg-navy" value="Em Atendimento">Status: Em Atendimento</option>
+                        <option className="bg-navy" value="Fechado">Status: Fechado</option>
                       </select>
-                    </td>
-                    <td className="py-4 text-right">
+                    </div>
+
+                    {/* Bloco 5: Botão WhatsApp */}
+                    <div className="flex justify-start md:justify-end mt-2 md:mt-0">
                       {lead.phone && (
                         <a 
                           href={`https://wa.me/55${lead.phone.replace(/\D/g, '')}?text=Olá ${lead.name}, sou da equipe jurídica da Dra Mônica Lucioli. Vimos que você completou nossa análise inicial sobre revisão da sua aposentadoria.`}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-2 bg-[#25D366] text-white px-4 py-2 rounded-xl font-medium hover:bg-[#1ebd59] transition-colors"
+                          className="w-full md:w-auto flex justify-center items-center gap-2 bg-[#25D366] text-white px-5 py-3 md:py-2 rounded-xl font-bold hover:bg-[#1ebd59] transition-colors shadow-lg"
                         >
-                          <MessageCircle size={18} /> Chamar
+                          <MessageCircle size={20} /> <span className="md:hidden">Chamar no WhatsApp</span><span className="hidden md:inline">Chamar</span>
                         </a>
                       )}
-                    </td>
-                  </tr>
+                    </div>
+
+                  </div>
                 ))}
+                
                 {filteredLeads.length === 0 && (
-                  <tr>
-                    <td colSpan={5} className="py-8 text-center text-text-muted">Nenhum lead encontrado.</td>
-                  </tr>
+                  <div className="py-12 text-center text-text-muted border border-dashed border-white/10 rounded-2xl">
+                    Nenhum lead encontrado ainda.
+                  </div>
                 )}
-              </tbody>
-            </table>
+              </div>
+            </div>
           )}
         </div>
       </div>
