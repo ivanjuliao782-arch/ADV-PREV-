@@ -158,10 +158,10 @@ export default function App() {
 
                 <div className="space-y-6">
                   <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight text-white drop-shadow-lg">
-                    Professores e profissionais da saúde aposentados antes de 2019 podem ter direito a um valor maior na aposentadoria
+                    Exclusivo para professores e profissionais da saúde aposentados até 2019
                   </h1>
                   <p className="text-lg md:text-2xl text-text-light/90 leading-relaxed max-w-2xl">
-                    Faça uma verificação rápida e entenda se o seu caso merece análise.
+                    Se você aposentou antes ou em 2019? Você pode ter direito à revisão do benefício.
                   </p>
                 </div>
 
