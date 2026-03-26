@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Play, Pause, CheckCircle2, AlertCircle, ChevronRight, Phone, Mail, Loader2 } from 'lucide-react';
 import { supabase } from './lib/supabase';
 
-type QuizState = 'loading' | 'hero' | 'quiz' | 'result' | 'disqualified';
+type QuizState = 'loading' | 'hero' | 'quiz' | 'lead_form' | 'result' | 'disqualified';
 
 interface QuestionOption {
   id: number;
@@ -33,6 +33,11 @@ export default function App() {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // States para o formulário de lead
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Buscar perguntas do Supabase ao carregar
   useEffect(() => {
@@ -82,14 +87,28 @@ export default function App() {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      // Salvar submissão como qualificado
-      await supabase.from('quiz_submissions').insert({
-        answers: newAnswers,
-        total_score: newScore,
-        result: 'qualified',
-      });
-      setState('result');
+      // Se chegou no fim e não foi desqualificado, vamos coletar os contatos
+      setState('lead_form');
     }
+  };
+
+  const handleLeadSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name || !phone) return;
+    setIsSubmitting(true);
+
+    // Salvar submissão como qualificado junto com o contato do lead
+    await supabase.from('quiz_submissions').insert({
+      answers: answers,
+      total_score: score,
+      result: 'qualified',
+      name: name,
+      phone: phone,
+      status: 'Novo',
+    });
+
+    setIsSubmitting(false);
+    setState('result');
   };
 
   const toggleAudio = () => {
@@ -243,6 +262,70 @@ export default function App() {
             </motion.div>
           )}
 
+          {state === 'lead_form' && (
+            <motion.div
+              key="lead_form"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="max-w-2xl mx-auto space-y-8"
+            >
+              <div className="text-center space-y-4">
+                <CheckCircle2 size={64} className="text-gold mx-auto mb-6" />
+                <h2 className="text-3xl md:text-4xl font-bold text-white">Ótima notícia!</h2>
+                <p className="text-xl text-text-light/90 leading-relaxed bg-navy-light p-6 rounded-2xl border border-gold/20">
+                  Seu perfil está dentro dos critérios para análise. 
+                  Você será encaminhado para o atendimento com um advogado da nossa equipe. <br/><br/>
+                  <span className="text-gold font-semibold uppercase tracking-wide">Este atendimento inicial não tem custos.</span>
+                </p>
+              </div>
+
+              <form onSubmit={handleLeadSubmit} className="space-y-6 pt-4">
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="name" className="block text-text-muted mb-2 text-sm font-semibold uppercase tracking-wider">
+                      Seu Nome Completo
+                    </label>
+                    <input
+                      id="name"
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Ex: Maria da Silva"
+                      className="w-full bg-navy-light border border-white/10 rounded-xl px-4 py-4 text-white placeholder:text-white/20 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors text-lg"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="phone" className="block text-text-muted mb-2 text-sm font-semibold uppercase tracking-wider">
+                      Seu WhatsApp (com DDD)
+                    </label>
+                    <input
+                      id="phone"
+                      type="tel"
+                      required
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="Ex: (11) 99999-9999"
+                      className="w-full bg-navy-light border border-white/10 rounded-xl px-4 py-4 text-white placeholder:text-white/20 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors text-lg"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="btn-gold w-full flex items-center justify-center gap-3 py-4 text-lg mt-8"
+                >
+                  {isSubmitting ? (
+                    <><Loader2 size={24} className="animate-spin" /> Processando...</>
+                  ) : (
+                    <>Falar com Advogado Agora <ChevronRight size={24} /></>
+                  )}
+                </button>
+              </form>
+            </motion.div>
+          )}
+
           {state === 'result' && (
             <motion.div
               key="result"
@@ -281,6 +364,8 @@ export default function App() {
                   setCurrentQuestionIndex(0);
                   setScore(0);
                   setAnswers({});
+                  setName('');
+                  setPhone('');
                 }}
                 className="text-gold border-b border-gold pb-1 hover:text-gold-hover hover:border-gold-hover transition-colors"
               >
@@ -319,6 +404,8 @@ export default function App() {
                   setCurrentQuestionIndex(0);
                   setScore(0);
                   setAnswers({});
+                  setName('');
+                  setPhone('');
                 }}
                 className="text-gold border-b border-gold pb-1 hover:text-gold-hover hover:border-gold-hover transition-colors"
               >
