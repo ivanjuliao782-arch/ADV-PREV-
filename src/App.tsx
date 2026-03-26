@@ -1,0 +1,343 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Play, Pause, CheckCircle2, AlertCircle, ChevronRight, Phone, Mail, Loader2 } from 'lucide-react';
+import { supabase } from './lib/supabase';
+
+type QuizState = 'loading' | 'hero' | 'quiz' | 'result' | 'disqualified';
+
+interface QuestionOption {
+  id: number;
+  text: string;
+  value: string;
+  score: number;
+  disqualifies: boolean;
+}
+
+interface Question {
+  id: number;
+  text: string;
+  progress_message: string | null;
+  question_options: QuestionOption[];
+}
+
+export default function App() {
+  const [state, setState] = useState<QuizState>('loading');
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [score, setScore] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Buscar perguntas do Supabase ao carregar
+  useEffect(() => {
+    async function fetchQuestions() {
+      const { data, error } = await supabase
+        .from('questions')
+        .select('id, text, progress_message, question_options(id, text, value, score, disqualifies)')
+        .order('sort_order', { ascending: true });
+
+      if (error) {
+        console.error('Erro ao buscar perguntas:', error);
+        setState('hero');
+        return;
+      }
+
+      // Ordenar as opções de cada pergunta
+      const sorted = (data || []).map((q: any) => ({
+        ...q,
+        question_options: q.question_options.sort((a: any, b: any) => a.id - b.id),
+      }));
+
+      setQuestions(sorted);
+      setState('hero');
+    }
+
+    fetchQuestions();
+  }, []);
+
+  const handleOptionSelect = async (option: QuestionOption, questionId: number) => {
+    const newAnswers = { ...answers, [questionId]: option.value };
+    setAnswers(newAnswers);
+
+    if (option.disqualifies) {
+      // Salvar submissão como desqualificado
+      await supabase.from('quiz_submissions').insert({
+        answers: newAnswers,
+        total_score: score,
+        result: 'disqualified',
+      });
+      setState('disqualified');
+      return;
+    }
+
+    const newScore = score + option.score;
+    setScore(newScore);
+
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      // Salvar submissão como qualificado
+      await supabase.from('quiz_submissions').insert({
+        answers: newAnswers,
+        total_score: newScore,
+        result: 'qualified',
+      });
+      setState('result');
+    }
+  };
+
+  const toggleAudio = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const currentQuestion = questions[currentQuestionIndex];
+
+  return (
+    <div className="min-h-screen flex flex-col items-center">
+      <main className="w-full max-w-6xl px-6 py-12 md:py-24">
+        <AnimatePresence mode="wait">
+          {state === 'loading' && (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="min-h-[60vh] flex flex-col items-center justify-center gap-4"
+            >
+              <Loader2 size={48} className="text-gold animate-spin" />
+              <p className="text-text-muted text-lg">Carregando...</p>
+            </motion.div>
+          )}
+
+          {state === 'hero' && (
+            <motion.div
+              key="hero"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="relative min-h-[80vh] flex items-center overflow-hidden rounded-[3rem] border border-white/10 shadow-2xl"
+            >
+              {/* Background Image with Gradient Overlay */}
+              <div className="absolute inset-0 z-0 bg-navy-light">
+                <img 
+                  src="https://i.imgur.com/tDYsye9.png" 
+                  alt="Dra. Mônica Lucioli" 
+                  className="w-full h-full object-cover object-top lg:object-right opacity-80 lg:opacity-100"
+                  referrerPolicy="no-referrer"
+                  loading="eager"
+                />
+                {/* Gradient for Desktop: Left to Right (Smoother transition) */}
+                <div className="hidden lg:block absolute inset-0 bg-gradient-to-r from-navy via-navy/80 to-transparent" />
+                {/* Gradient for Mobile: Bottom to Top */}
+                <div className="block lg:hidden absolute inset-0 bg-gradient-to-t from-navy via-navy/60 to-transparent" />
+              </div>
+
+              {/* Content Layer */}
+              <div className="relative z-10 w-full lg:max-w-3xl p-8 md:p-12 lg:p-20 space-y-8">
+                <header>
+                  <h2 className="text-gold text-2xl md:text-3xl font-bold tracking-widest uppercase mb-2">
+                    Mônica Lucioli
+                  </h2>
+                  <p className="text-text-muted text-xl uppercase tracking-widest">
+                    Advocacia Previdenciária
+                  </p>
+                </header>
+
+                <div className="space-y-6">
+                  <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight text-white drop-shadow-lg">
+                    Professores e profissionais da saúde aposentados antes de 2019 podem ter direito a um valor maior na aposentadoria
+                  </h1>
+                  <p className="text-lg md:text-2xl text-text-light/90 leading-relaxed max-w-2xl">
+                    Faça uma verificação rápida e entenda se o seu caso merece análise.
+                  </p>
+                </div>
+
+                {/* Audio Player */}
+                <div className="bg-navy/60 backdrop-blur-md p-6 rounded-2xl border border-gold/20 flex items-center gap-6 max-w-md">
+                  <button
+                    onClick={toggleAudio}
+                    className="w-14 h-14 bg-gold rounded-full flex items-center justify-center text-navy hover:bg-gold-hover transition-colors shadow-lg shrink-0"
+                  >
+                    {isPlaying ? <Pause size={28} fill="currentColor" /> : <Play size={28} className="ml-1" fill="currentColor" />}
+                  </button>
+                  <div>
+                    <p className="text-gold font-bold text-lg">Mensagem da advogada</p>
+                    <p className="text-text-muted text-sm">Ouça uma breve explicação sobre seus direitos</p>
+                  </div>
+                  <audio
+                    ref={audioRef}
+                    src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+                    onEnded={() => setIsPlaying(false)}
+                  />
+                </div>
+
+                <div className="pt-4">
+                  <button
+                    onClick={() => setState('quiz')}
+                    className="btn-gold w-full md:w-auto flex items-center justify-center gap-3 px-12"
+                  >
+                    Verificar meu caso agora
+                    <ChevronRight size={24} />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {state === 'quiz' && (
+            <motion.div
+              key="quiz"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="max-w-2xl mx-auto w-full space-y-10"
+            >
+              <div className="space-y-4">
+                <div className="flex justify-between items-end">
+                  <p className="text-gold font-bold text-lg">Pergunta {currentQuestionIndex + 1} de {questions.length}</p>
+                  <p className="text-text-muted">Progresso: {Math.round(((currentQuestionIndex + 1) / questions.length) * 100)}%</p>
+                </div>
+                <div className="h-3 bg-navy-light rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-gold"
+                    initial={{ width: '0%' }}
+                    animate={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}
+                  />
+                </div>
+                {questions[currentQuestionIndex]?.progress_message && (
+                  <p className="text-gold italic text-center animate-pulse">
+                    {questions[currentQuestionIndex].progress_message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-8">
+                <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
+                  {currentQuestion.text}
+                </h2>
+                <div className="grid grid-cols-1 gap-4">
+                  {currentQuestion?.question_options.map((option) => (
+                    <button
+                      key={option.id}
+                      onClick={() => handleOptionSelect(option, currentQuestion.id)}
+                      className="quiz-option"
+                    >
+                      {option.text}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {state === 'result' && (
+            <motion.div
+              key="result"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="max-w-2xl mx-auto text-center space-y-8"
+            >
+              <div className="flex justify-center">
+                <CheckCircle2 size={80} className="text-gold" />
+              </div>
+              <h2 className="text-4xl font-bold text-white">Informações recebidas com sucesso</h2>
+              <div className="bg-navy-light p-8 rounded-3xl border border-gold/20 space-y-6">
+                <p className="text-xl text-text-muted leading-relaxed">
+                  Obrigado por completar a verificação. Suas informações foram enviadas para nossa equipe jurídica.
+                </p>
+                <p className="text-xl text-text-muted leading-relaxed">
+                  Seu caso será analisado criteriosamente. Entraremos em contato caso existam indícios reais de possibilidade de revisão do seu benefício.
+                </p>
+              </div>
+              <div className="pt-8 border-t border-white/10">
+                <p className="text-text-muted mb-6">Dúvidas urgentes? Entre em contato:</p>
+                <div className="flex flex-wrap justify-center gap-8">
+                  <div className="flex items-center gap-2 text-gold">
+                    <Phone size={20} />
+                    <span>(11) 99999-9999</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gold">
+                    <Mail size={20} />
+                    <span>contato@monicalucioli.adv.br</span>
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setState('hero');
+                  setCurrentQuestionIndex(0);
+                  setScore(0);
+                  setAnswers({});
+                }}
+                className="text-gold border-b border-gold pb-1 hover:text-gold-hover hover:border-gold-hover transition-colors"
+              >
+                Voltar ao início
+              </button>
+            </motion.div>
+          )}
+
+          {state === 'disqualified' && (
+            <motion.div
+              key="disqualified"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="max-w-2xl mx-auto text-center space-y-8"
+            >
+              <div className="flex justify-center">
+                <AlertCircle size={80} className="text-text-muted" />
+              </div>
+              <h2 className="text-4xl font-bold text-white">Verificação Concluída</h2>
+              <div className="bg-navy-light p-8 rounded-3xl border border-white/10 space-y-6">
+                <p className="text-xl text-text-muted leading-relaxed">
+                  Agradecemos o seu interesse. No momento, esta análise específica de revisão é destinada exclusivamente a:
+                </p>
+                <ul className="text-left text-lg text-text-muted space-y-3 list-disc list-inside max-w-md mx-auto">
+                  <li>Professores ou Profissionais da Saúde</li>
+                  <li>Já aposentados</li>
+                  <li>Aposentadorias concedidas até 2019</li>
+                </ul>
+                <p className="text-xl text-text-muted leading-relaxed pt-4">
+                  Caso você não se enquadre nestes critérios, sua situação atual pode não ser passível desta revisão específica.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setState('hero');
+                  setCurrentQuestionIndex(0);
+                  setScore(0);
+                  setAnswers({});
+                }}
+                className="text-gold border-b border-gold pb-1 hover:text-gold-hover hover:border-gold-hover transition-colors"
+              >
+                Voltar ao início
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </main>
+
+      <footer className="w-full py-12 border-t border-white/10 mt-auto">
+        <div className="max-w-6xl mx-auto px-6 text-center space-y-4">
+          <p className="text-text-muted">© 2026 Mônica Lucioli Advocacia Previdenciária. Todos os direitos reservados.</p>
+          <p className="text-text-muted text-sm max-w-2xl mx-auto">
+            Este site tem caráter meramente informativo e não constitui promessa de ganho financeiro. 
+            A análise de cada caso é individual e depende de critérios legais específicos.
+          </p>
+        </div>
+      </footer>
+    </div>
+  );
+}

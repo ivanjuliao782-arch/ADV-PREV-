@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-navy: #0A192F;
+  --color-navy-light: #112240;
+  --color-gold: #C9A84C;
+  --color-gold-hover: #B0923D;
+  --color-text-light: #E6F1FF;
+  --color-text-muted: #8892B0;
+}
+
+body {
+  @apply bg-navy text-text-light font-sans antialiased;
+}
+
+.btn-gold {
+  @apply bg-gold hover:bg-gold-hover text-navy font-bold py-5 px-8 rounded-xl shadow-xl transition-all transform active:scale-95 uppercase tracking-wide text-xl text-center;
+}
+
+.quiz-option {
+  @apply bg-navy-light border-2 border-transparent hover:border-gold p-6 rounded-2xl text-left transition-all cursor-pointer text-xl font-medium;
+}
+
+.quiz-option.selected {
+  @apply border-gold bg-navy-light text-gold;
+}
+
+h1, h2, h3 {
+  @apply font-bold;
+}
+
+p {
+  @apply font-normal;
+}
