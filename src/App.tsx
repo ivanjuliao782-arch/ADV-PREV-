@@ -179,7 +179,7 @@ export default function App() {
                   </div>
                   <audio
                     ref={audioRef}
-                    src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+                    src="/audio-advogada.wav"
                     onEnded={() => setIsPlaying(false)}
                   />
                 </div>
