@@ -92,38 +92,22 @@ export default function App() {
     }
   };
 
-  const handleLeadSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name || !phone) return;
-    setIsSubmitting(true);
-
-    try {
-      // Salvar submissão no banco (para o gestor ter o backup sempre)
-      await supabase.from('quiz_submissions').insert({
-        answers: answers,
-        total_score: score,
-        result: 'qualified',
-        name: name,
-        phone: phone,
-        status: 'Novo',
-      });
-
-      // Preparar a mensagem para a Dra. Mônica
-      const message = `Olá Dra. Mônica Lucioli! Acabei de completar a análise no seu site.\n\n` +
-        `*Dados do Lead:*\n` +
-        `• Nome: ${name}\n` +
-        `• WhatsApp: ${phone}\n\n` +
-        `*Resumo do Perfil:*\n` +
-        `• Profissão: ${answers[1] || '-'}\n` +
-        `• Aposentou em: ${answers[3] || '-'}\n` +
-        `• Múltiplos vínculos: ${answers[4] || '-'}\n\n` +
-        `Gostaria de agendar meu atendimento inicial gratuito.`;
+      // Preparar a mensagem curta e direta para o usuário enviar para a Dra.
+      const message = `Olá Dra. Mônica Lucioli! Acabei de completar a análise no seu site e fui qualificado para a revisão.\n\n` +
+        `Nome: ${name}\n` +
+        `Telefone: ${phone}\n\n` +
+        `Quero agendar meu atendimento inicial gratuito.`;
 
       const encodedMessage = encodeURIComponent(message);
       const whatsappUrl = `https://wa.me/5532991652789?text=${encodedMessage}`;
 
-      // Redirecionar direto para o WhatsApp da Dra.
-      window.location.href = whatsappUrl;
+      // Ir para a tela de sucesso (onde ele vê a mensagem de boas-vindas)
+      setState('result');
+
+      // Abrir o WhatsApp em uma nova aba após 2 segundos (tempo de ler a mensagem na tela)
+      setTimeout(() => {
+        window.open(whatsappUrl, '_blank');
+      }, 2500);
       
     } catch (error) {
       console.error('Erro ao processar lead:', error);
@@ -367,30 +351,43 @@ export default function App() {
               className="max-w-2xl mx-auto text-center space-y-8"
             >
               <div className="flex justify-center">
-                <CheckCircle2 size={80} className="text-gold" />
+                <CheckCircle2 size={100} className="text-gold animate-bounce" />
               </div>
-              <h2 className="text-4xl font-bold text-white">Informações recebidas com sucesso</h2>
-              <div className="bg-navy-light p-8 rounded-3xl border border-gold/20 space-y-6">
-                <p className="text-xl text-text-muted leading-relaxed">
-                  Obrigado por completar a verificação. Suas informações foram enviadas para nossa equipe jurídica.
+              
+              <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
+                Análise Concluída com Sucesso!
+              </h2>
+
+              <div className="bg-navy-light p-8 md:p-12 rounded-[2.5rem] border-2 border-gold/30 space-y-8 shadow-2xl">
+                <p className="text-2xl md:text-3xl text-white font-medium leading-relaxed">
+                  Seja bem-vindo ao escritório da <span className="text-gold">Dra. Mônica Lucioli!</span>
                 </p>
-                <p className="text-xl text-text-muted leading-relaxed">
-                  Seu caso será analisado criteriosamente. Entraremos em contato caso existam indícios reais de possibilidade de revisão do seu benefício.
+                
+                <p className="text-xl md:text-2xl text-text-light/90 leading-relaxed">
+                  Faça um resumo do seu caso que já já vamos prosseguir com seu atendimento.
                 </p>
-              </div>
-              <div className="pt-8 border-t border-white/10">
-                <p className="text-text-muted mb-6">Dúvidas urgentes? Entre em contato:</p>
-                <div className="flex flex-wrap justify-center gap-8">
-                  <div className="flex items-center gap-2 text-gold">
-                    <Phone size={20} />
-                    <span>(11) 99999-9999</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gold">
-                    <Mail size={20} />
-                    <span>contato@monicalucioli.adv.br</span>
-                  </div>
+
+                <div className="bg-gold/10 p-4 rounded-xl border border-gold/20">
+                  <p className="text-lg md:text-xl text-gold font-bold">
+                    Ah… fique à vontade, esse primeiro atendimento não tem custas!
+                  </p>
+                </div>
+
+                <div className="pt-4">
+                  <p className="text-text-muted mb-6 text-sm">Estamos te encaminhando para o WhatsApp...</p>
+                  <button
+                    onClick={() => {
+                      const message = `Olá Dra. Mônica Lucioli! Acabei de completar a análise no seu site e fui qualificado para a revisão.\n\nNome: ${name}\nTelefone: ${phone}\n\nQuero agendar meu atendimento inicial gratuito.`;
+                      window.open(`https://wa.me/5532991652789?text=${encodeURIComponent(message)}`, '_blank');
+                    }}
+                    className="btn-gold w-full flex items-center justify-center gap-4 py-6 text-2xl shadow-[0_0_30px_rgba(201,168,76,0.5)]"
+                  >
+                    <Phone size={32} fill="currentColor" />
+                    Falar agora no WhatsApp
+                  </button>
                 </div>
               </div>
+
               <button
                 onClick={() => {
                   setState('hero');
@@ -400,9 +397,9 @@ export default function App() {
                   setName('');
                   setPhone('');
                 }}
-                className="text-gold border-b border-gold pb-1 hover:text-gold-hover hover:border-gold-hover transition-colors"
+                className="text-text-muted hover:text-gold transition-colors text-lg"
               >
-                Voltar ao início
+                Voltar à página inicial
               </button>
             </motion.div>
           )}
