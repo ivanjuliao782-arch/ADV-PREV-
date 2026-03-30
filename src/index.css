@@ -15,8 +15,24 @@ body {
   @apply bg-navy text-text-light font-sans antialiased;
 }
 
+@keyframes vibrant-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(201, 168, 76, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px 10px rgba(201, 168, 76, 0.4);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(201, 168, 76, 0);
+  }
+}
+
 .btn-gold {
   @apply bg-gold hover:bg-gold-hover text-navy font-bold py-5 px-8 rounded-xl shadow-xl transition-all transform active:scale-95 uppercase tracking-wide text-xl text-center;
+  animation: vibrant-pulse 2s infinite ease-in-out;
 }
 
 .quiz-option {
