@@ -147,7 +147,7 @@ export default function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="relative min-h-[85vh] md:min-h-[90vh] flex items-end overflow-hidden rounded-[3rem] border border-white/10 shadow-2xl"
+              className="relative min-h-[85vh] md:min-h-[90vh] flex flex-col justify-between overflow-hidden rounded-[3rem] border border-white/10 shadow-2xl"
             >
               {/* Background Image with Gradient Overlay */}
               <div className="absolute inset-0 z-0 bg-navy-light">
@@ -158,21 +158,26 @@ export default function App() {
                   referrerPolicy="no-referrer"
                   loading="eager"
                 />
+                {/* Gradient do Topo (Para a Headline ler perfeitamente acima da cabeça) */}
+                <div className="absolute inset-0 bg-gradient-to-b from-navy/80 via-transparent to-transparent h-1/3" />
                 {/* Gradient de Baixo para Cima (Para a copy ficar legível e não cobrir o rosto) */}
-                <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/90 to-transparent lg:via-navy/70" />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy via-navy/90 to-transparent lg:via-navy/70 h-2/3" />
               </div>
 
-              {/* Content Layer */}
-              <div className="relative z-10 w-full lg:max-w-4xl p-6 md:p-12 lg:p-16 space-y-6 lg:space-y-8 mt-[20vh] md:mt-[30vh]">
+              {/* Top Headline Layer */}
+              <div className="relative z-10 w-full p-6 md:p-12 lg:p-16 pt-8 md:pt-12 lg:pt-16">
                 <header>
-                  <h2 className="text-gold text-2xl md:text-3xl font-bold tracking-widest uppercase mb-2">
+                  <h2 className="text-gold text-xl md:text-3xl font-bold tracking-widest uppercase drop-shadow-lg mb-2">
                     Mônica Lucioli
                   </h2>
-                  <p className="text-text-muted text-xl uppercase tracking-widest">
+                  <p className="text-white/90 font-medium text-sm md:text-xl uppercase tracking-widest drop-shadow-lg">
                     Advocacia Previdenciária
                   </p>
                 </header>
+              </div>
 
+              {/* Bottom Content Layer */}
+              <div className="relative z-10 w-full lg:max-w-4xl p-6 md:p-12 lg:p-16 space-y-6 lg:space-y-8 mt-auto">
                 <div className="space-y-6">
                   <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight text-white drop-shadow-lg">
                     Exclusivo para professores e profissionais da saúde aposentados até 2019
