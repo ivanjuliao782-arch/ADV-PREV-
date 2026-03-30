@@ -152,7 +152,7 @@ export default function App() {
               {/* Background Image with Gradient Overlay */}
               <div className="absolute inset-0 z-0 bg-navy-light">
                 <img 
-                  src="https://i.imgur.com/tDYsye9.png" 
+                  src="/foto-doutora.jpeg" 
                   alt="Dra. Mônica Lucioli" 
                   className="w-full h-full object-cover object-top lg:object-right opacity-80 lg:opacity-100"
                   referrerPolicy="no-referrer"
