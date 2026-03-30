@@ -116,6 +116,7 @@ export default function App() {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
+        audioRef.current.playbackRate = 1.3;
         audioRef.current.play();
       }
       setIsPlaying(!isPlaying);
@@ -208,7 +209,7 @@ export default function App() {
                   </div>
                   <audio
                     ref={audioRef}
-                    src="/audio-advogada.wav"
+                    src="/audio-advogada.ogg"
                     onEnded={() => setIsPlaying(false)}
                   />
                 </div>
