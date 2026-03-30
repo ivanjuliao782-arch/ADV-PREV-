@@ -165,8 +165,8 @@ export default function App() {
                 {/* Gradient do Topo (Mobile) para a Headline ficar legível */}
                 <div className="lg:hidden absolute inset-x-0 top-0 bg-gradient-to-b from-navy/80 via-navy/40 to-transparent h-[25%]" />
 
-                {/* Gradient de Baixo para Cima (Mobile e Desktop) cobrindo todo o bloco de texto */}
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy via-navy/90 to-transparent h-[55%] lg:h-[40%]" />
+                {/* Gradient de Baixo para Cima - menor no mobile para não escurecer o rosto */}
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy via-navy/95 to-transparent h-[40%] lg:h-[40%]" />
               </div>
 
               {/* HEADLINE NO TOPO (Mobile e Desktop) */}
@@ -183,11 +183,11 @@ export default function App() {
 
               {/* BLOCO DE CONTEÚDO INFERIOR (Mobile e Desktop) */}
               <div className="relative z-10 w-full lg:max-w-4xl p-6 md:p-12 lg:p-16 mt-auto">
-                <div className="space-y-6">
-                  <h1 className="text-3xl md:text-5xl lg:text-5xl xl:text-6xl font-bold leading-tight text-white drop-shadow-lg">
+                <div className="space-y-4 lg:space-y-6">
+                  <h1 className="text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight text-white drop-shadow-lg">
                     Exclusivo para professores e profissionais da saúde aposentados até 2019
                   </h1>
-                  <p className="text-lg md:text-2xl text-text-light/90 leading-relaxed max-w-2xl">
+                  <p className="text-base md:text-xl lg:text-2xl text-text-light/90 leading-relaxed max-w-2xl">
                     Se você aposentou antes ou em 2019? Você pode ter direito à revisão do benefício.
                   </p>
                 </div>
