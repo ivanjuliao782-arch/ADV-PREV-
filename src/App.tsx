@@ -147,32 +147,46 @@ export default function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="relative flex flex-col lg:flex-row-reverse overflow-hidden rounded-[2.5rem] lg:rounded-[3rem] border border-white/10 shadow-2xl bg-navy min-h-[85vh] md:min-h-[90vh]"
+              className="relative min-h-[85vh] md:min-h-[90vh] flex flex-col justify-between overflow-hidden rounded-[2.5rem] lg:rounded-[3rem] border border-white/10 shadow-2xl bg-navy"
             >
-              {/* IMAGE TRAY: Fica em Cima no Celular e na Direita no Computador */}
-              <div className="relative w-full lg:w-1/2 flex-1 h-[45vh] lg:h-auto shrink-0">
+              {/* Background Image with Gradient Overlay */}
+              <div className="absolute inset-0 z-0">
                 <img 
                   src="/foto-doutora.jpeg" 
                   alt="Dra. Mônica Lucioli" 
-                  className="w-full h-full object-cover object-top lg:object-[center_top] opacity-100"
+                  className="w-full h-full object-cover lg:object-contain object-top lg:object-right opacity-90"
                   referrerPolicy="no-referrer"
                   loading="eager"
                 />
                 
-                {/* Degradê Mobile: Transição suave da foto para o texto embaixo */}
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy via-navy/90 to-transparent h-1/3 lg:hidden" />
-                
-                {/* Degradê PC: Transição da foto para a cor sólida da esquerda */}
-                <div className="hidden lg:block absolute inset-y-0 left-0 bg-gradient-to-r from-navy via-navy/90 to-transparent w-1/3" />
+                {/* Gradient da Esquerda (Desktop) para fazer o texto brilhar na esquerda e sumir a borda da foto */}
+                <div className="hidden lg:block absolute inset-0 bg-gradient-to-r from-navy via-navy/90 to-transparent w-3/4" />
+
+                {/* Gradient de Baixo para Cima (Mobile e Desktop) cobrindo todo o bloco de texto */}
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy via-navy/90 to-transparent h-[60%] lg:h-[40%]" />
               </div>
 
-              {/* TEXT TRAY: Fica Embaixo no Celular e na Esquerda no Computador */}
-              <div className="relative z-10 flex flex-col justify-center w-full lg:w-1/2 p-6 md:p-12 lg:p-16 space-y-6 lg:space-y-8 bg-navy lg:bg-transparent">
+              {/* HEADLINE EXCLUSIVO DESKTOP (Topo Esquerda) */}
+              <div className="hidden lg:block relative z-10 w-full lg:max-w-xl p-16 pt-16">
                 <header>
-                  <h2 className="text-gold text-2xl md:text-3xl font-bold tracking-widest uppercase drop-shadow-md mb-1">
+                  <h2 className="text-gold text-3xl font-bold tracking-widest uppercase drop-shadow-xl mb-2">
                     Mônica Lucioli
                   </h2>
-                  <p className="text-white/80 font-medium text-sm md:text-lg uppercase tracking-widest drop-shadow-md">
+                  <p className="text-white/90 font-medium text-xl uppercase tracking-widest drop-shadow-lg">
+                    Advocacia Previdenciária
+                  </p>
+                </header>
+              </div>
+
+              {/* BLOCO DE CONTEÚDO INFERIOR (Mobile e Desktop) */}
+              <div className="relative z-10 w-full lg:max-w-4xl p-6 md:p-12 lg:p-16 mt-auto flex flex-col pt-32 lg:pt-0">
+                
+                {/* HEADLINE EXCLUSIVO MOBILE (Jogado pra baixo pra não cobrir o rosto!) */}
+                <header className="lg:hidden mb-6">
+                  <h2 className="text-gold text-2xl font-bold tracking-widest uppercase drop-shadow-md mb-1">
+                    Mônica Lucioli
+                  </h2>
+                  <p className="text-white/90 font-medium text-sm md:text-lg uppercase tracking-widest drop-shadow-md">
                     Advocacia Previdenciária
                   </p>
                 </header>
