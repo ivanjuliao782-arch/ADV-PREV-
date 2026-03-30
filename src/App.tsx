@@ -215,7 +215,7 @@ export default function App() {
                   </div>
                   <audio
                     ref={audioRef}
-                    src="/audio-advogada.ogg"
+                    src="/audio-advogada.wav"
                     onEnded={() => setIsPlaying(false)}
                   />
                 </div>
@@ -412,20 +412,39 @@ export default function App() {
               className="max-w-2xl mx-auto text-center space-y-8"
             >
               <div className="flex justify-center">
-                <AlertCircle size={80} className="text-text-muted" />
+                <AlertCircle size={100} className="text-text-muted opacity-50" />
               </div>
-              <h2 className="text-4xl font-bold text-white">Verificação Concluída</h2>
-              <div className="bg-navy-light p-8 rounded-3xl border border-white/10 space-y-6">
-                <p className="text-xl text-text-muted leading-relaxed">
-                  Agradecemos o seu interesse. No momento, esta análise específica de revisão é destinada exclusivamente a:
+              
+              <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
+                Análise Concluída
+              </h2>
+
+              <div className="bg-navy-light p-8 md:p-12 rounded-[2.5rem] border-2 border-white/5 space-y-6 shadow-2xl text-left">
+                <p className="text-xl md:text-2xl text-text-light/90 leading-relaxed mb-4">
+                  Agradecemos o seu interesse, mas seu perfil não se encaixa nos critérios desta revisão específica no momento.
                 </p>
-                <ul className="text-left text-lg text-text-muted space-y-3 list-disc list-inside max-w-md mx-auto">
-                  <li>Professores ou Profissionais da Saúde</li>
-                  <li>Já aposentados</li>
-                  <li>Aposentadorias concedidas até 2019</li>
+                
+                <p className="text-lg md:text-xl text-gold font-bold uppercase tracking-wider mb-2">
+                  Esta revisão é destinada apenas a:
+                </p>
+                
+                <ul className="space-y-4">
+                  <li className="flex items-start gap-3 text-lg md:text-xl text-text-light/80">
+                    <span className="text-gold mt-1">•</span>
+                    Professores ou Profissionais da Saúde.
+                  </li>
+                  <li className="flex items-start gap-3 text-lg md:text-xl text-text-light/80">
+                    <span className="text-gold mt-1">•</span>
+                    Já aposentados (antes ou em 2019).
+                  </li>
+                  <li className="flex items-start gap-3 text-lg md:text-xl text-text-light/80 font-bold text-white">
+                    <span className="text-gold mt-1">•</span>
+                    Que trabalharam em mais de um emprego ao mesmo tempo.
+                  </li>
                 </ul>
-                <p className="text-xl text-text-muted leading-relaxed pt-4">
-                  Caso você não se enquadre nestes critérios, sua situação atual pode não ser passível desta revisão específica.
+
+                <p className="text-base md:text-lg text-text-muted mt-6 italic">
+                  Caso queira analisar outro benefício, recomendamos procurar um advogado de sua confiança.
                 </p>
               </div>
               <button
