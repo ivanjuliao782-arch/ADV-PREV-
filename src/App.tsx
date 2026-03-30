@@ -147,25 +147,23 @@ export default function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="relative min-h-[80vh] flex items-center overflow-hidden rounded-[3rem] border border-white/10 shadow-2xl"
+              className="relative min-h-[85vh] md:min-h-[90vh] flex items-end overflow-hidden rounded-[3rem] border border-white/10 shadow-2xl"
             >
               {/* Background Image with Gradient Overlay */}
               <div className="absolute inset-0 z-0 bg-navy-light">
                 <img 
                   src="/foto-doutora.jpeg" 
                   alt="Dra. Mônica Lucioli" 
-                  className="w-full h-full object-cover object-top lg:object-right opacity-80 lg:opacity-100"
+                  className="w-full h-full object-cover object-top opacity-90"
                   referrerPolicy="no-referrer"
                   loading="eager"
                 />
-                {/* Gradient for Desktop: Left to Right (Smoother transition) */}
-                <div className="hidden lg:block absolute inset-0 bg-gradient-to-r from-navy via-navy/80 to-transparent" />
-                {/* Gradient for Mobile: Bottom to Top */}
-                <div className="block lg:hidden absolute inset-0 bg-gradient-to-t from-navy via-navy/60 to-transparent" />
+                {/* Gradient de Baixo para Cima (Para a copy ficar legível e não cobrir o rosto) */}
+                <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/90 to-transparent lg:via-navy/70" />
               </div>
 
               {/* Content Layer */}
-              <div className="relative z-10 w-full lg:max-w-3xl p-8 md:p-12 lg:p-20 space-y-8">
+              <div className="relative z-10 w-full lg:max-w-4xl p-6 md:p-12 lg:p-16 space-y-6 lg:space-y-8 mt-[20vh] md:mt-[30vh]">
                 <header>
                   <h2 className="text-gold text-2xl md:text-3xl font-bold tracking-widest uppercase mb-2">
                     Mônica Lucioli
