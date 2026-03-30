@@ -147,41 +147,36 @@ export default function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="relative min-h-[85vh] md:min-h-[90vh] flex flex-col justify-between overflow-hidden rounded-[3rem] border border-white/10 shadow-2xl bg-navy"
+              className="relative flex flex-col lg:flex-row-reverse overflow-hidden rounded-[2.5rem] lg:rounded-[3rem] border border-white/10 shadow-2xl bg-navy min-h-[85vh] md:min-h-[90vh]"
             >
-              {/* Background Image with Gradient Overlay */}
-              <div className="absolute inset-0 z-0">
+              {/* IMAGE TRAY: Fica em Cima no Celular e na Direita no Computador */}
+              <div className="relative w-full lg:w-1/2 flex-1 h-[45vh] lg:h-auto shrink-0">
                 <img 
                   src="/foto-doutora.jpeg" 
                   alt="Dra. Mônica Lucioli" 
-                  className="w-full h-full object-cover lg:object-contain object-top lg:object-right opacity-90"
+                  className="w-full h-full object-cover object-top lg:object-[center_top] opacity-100"
                   referrerPolicy="no-referrer"
                   loading="eager"
                 />
-                {/* Gradient do Topo (Mobile/Tablet) para ler a Headline */}
-                <div className="absolute inset-0 bg-gradient-to-b from-navy/90 via-navy/20 to-transparent h-1/3 lg:hidden" />
                 
-                {/* Gradient da Esquerda (Desktop) para fazer o texto brilhar na esquerda e sumir a borda da foto */}
-                <div className="hidden lg:block absolute inset-0 bg-gradient-to-r from-navy via-navy/90 to-transparent w-3/4" />
-
-                {/* Gradient de Baixo para Cima (Sempre) para apoiar a Copy */}
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy via-navy/80 to-transparent h-1/2 lg:h-1/3" />
+                {/* Degradê Mobile: Transição suave da foto para o texto embaixo */}
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy via-navy/90 to-transparent h-1/3 lg:hidden" />
+                
+                {/* Degradê PC: Transição da foto para a cor sólida da esquerda */}
+                <div className="hidden lg:block absolute inset-y-0 left-0 bg-gradient-to-r from-navy via-navy/90 to-transparent w-1/3" />
               </div>
 
-              {/* Top Headline Layer */}
-              <div className="relative z-10 w-full lg:max-w-xl p-6 md:p-12 lg:p-16 pt-8 md:pt-12 lg:pt-16">
+              {/* TEXT TRAY: Fica Embaixo no Celular e na Esquerda no Computador */}
+              <div className="relative z-10 flex flex-col justify-center w-full lg:w-1/2 p-6 md:p-12 lg:p-16 space-y-6 lg:space-y-8 bg-navy lg:bg-transparent">
                 <header>
-                  <h2 className="text-gold text-2xl md:text-3xl font-bold tracking-widest uppercase drop-shadow-xl mb-2">
+                  <h2 className="text-gold text-2xl md:text-3xl font-bold tracking-widest uppercase drop-shadow-md mb-1">
                     Mônica Lucioli
                   </h2>
-                  <p className="text-white/90 font-medium text-sm md:text-xl uppercase tracking-widest drop-shadow-lg">
+                  <p className="text-white/80 font-medium text-sm md:text-lg uppercase tracking-widest drop-shadow-md">
                     Advocacia Previdenciária
                   </p>
                 </header>
-              </div>
 
-              {/* Bottom Content Layer */}
-              <div className="relative z-10 w-full lg:max-w-3xl p-6 md:p-12 lg:p-16 space-y-6 lg:space-y-8 mt-auto">
                 <div className="space-y-6">
                   <h1 className="text-3xl md:text-5xl lg:text-5xl xl:text-6xl font-bold leading-tight text-white drop-shadow-lg">
                     Exclusivo para professores e profissionais da saúde aposentados até 2019
