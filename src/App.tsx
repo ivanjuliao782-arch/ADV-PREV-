@@ -162,35 +162,27 @@ export default function App() {
                 {/* Gradient da Esquerda (Desktop) para fazer o texto brilhar na esquerda e sumir a borda da foto */}
                 <div className="hidden lg:block absolute inset-0 bg-gradient-to-r from-navy via-navy/90 to-transparent w-3/4" />
 
+                {/* Gradient do Topo (Mobile) para a Headline ficar legível */}
+                <div className="lg:hidden absolute inset-x-0 top-0 bg-gradient-to-b from-navy/80 via-navy/40 to-transparent h-[25%]" />
+
                 {/* Gradient de Baixo para Cima (Mobile e Desktop) cobrindo todo o bloco de texto */}
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy via-navy/90 to-transparent h-[60%] lg:h-[40%]" />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy via-navy/90 to-transparent h-[55%] lg:h-[40%]" />
               </div>
 
-              {/* HEADLINE EXCLUSIVO DESKTOP (Topo Esquerda) */}
-              <div className="hidden lg:block relative z-10 w-full lg:max-w-xl p-16 pt-16">
+              {/* HEADLINE NO TOPO (Mobile e Desktop) */}
+              <div className="relative z-10 w-full lg:max-w-xl p-6 md:p-12 lg:p-16 pt-8 md:pt-12 lg:pt-16">
                 <header>
-                  <h2 className="text-gold text-3xl font-bold tracking-widest uppercase drop-shadow-xl mb-2">
+                  <h2 className="text-gold text-xl md:text-2xl lg:text-3xl font-bold tracking-widest uppercase drop-shadow-xl mb-1 lg:mb-2">
                     Mônica Lucioli
                   </h2>
-                  <p className="text-white/90 font-medium text-xl uppercase tracking-widest drop-shadow-lg">
+                  <p className="text-white/90 font-medium text-xs md:text-base lg:text-xl uppercase tracking-widest drop-shadow-lg">
                     Advocacia Previdenciária
                   </p>
                 </header>
               </div>
 
               {/* BLOCO DE CONTEÚDO INFERIOR (Mobile e Desktop) */}
-              <div className="relative z-10 w-full lg:max-w-4xl p-6 md:p-12 lg:p-16 mt-auto flex flex-col pt-32 lg:pt-0">
-                
-                {/* HEADLINE EXCLUSIVO MOBILE (Jogado pra baixo pra não cobrir o rosto!) */}
-                <header className="lg:hidden mb-6">
-                  <h2 className="text-gold text-2xl font-bold tracking-widest uppercase drop-shadow-md mb-1">
-                    Mônica Lucioli
-                  </h2>
-                  <p className="text-white/90 font-medium text-sm md:text-lg uppercase tracking-widest drop-shadow-md">
-                    Advocacia Previdenciária
-                  </p>
-                </header>
-
+              <div className="relative z-10 w-full lg:max-w-4xl p-6 md:p-12 lg:p-16 mt-auto">
                 <div className="space-y-6">
                   <h1 className="text-3xl md:text-5xl lg:text-5xl xl:text-6xl font-bold leading-tight text-white drop-shadow-lg">
                     Exclusivo para professores e profissionais da saúde aposentados até 2019
