@@ -154,7 +154,7 @@ export default function App() {
                 <img 
                   src="/foto-doutora.jpeg" 
                   alt="Dra. Mônica Lucioli" 
-                  className="w-full h-full object-cover lg:object-contain object-top lg:object-right opacity-90 blur-[1.5px]"
+                  className="w-full h-full object-cover lg:object-contain object-top lg:object-right opacity-90"
                   referrerPolicy="no-referrer"
                   loading="eager"
                 />
@@ -182,7 +182,7 @@ export default function App() {
               </div>
 
               {/* BLOCO DE CONTEÚDO INFERIOR (Mobile e Desktop) */}
-              <div className="relative z-10 w-full lg:max-w-4xl p-6 md:p-12 lg:p-16 mt-auto">
+              <div className="relative z-10 w-full lg:max-w-4xl p-6 md:p-12 lg:p-16 mt-auto backdrop-blur-[2px]">
                 <div className="space-y-4 lg:space-y-6">
                   <h1 className="text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight text-white drop-shadow-lg">
                     Exclusivo para professores e profissionais da saúde aposentados até 2019
