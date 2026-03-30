@@ -97,18 +97,40 @@ export default function App() {
     if (!name || !phone) return;
     setIsSubmitting(true);
 
-    // Salvar submissão como qualificado junto com o contato do lead
-    await supabase.from('quiz_submissions').insert({
-      answers: answers,
-      total_score: score,
-      result: 'qualified',
-      name: name,
-      phone: phone,
-      status: 'Novo',
-    });
+    try {
+      // Salvar submissão no banco (para o gestor ter o backup sempre)
+      await supabase.from('quiz_submissions').insert({
+        answers: answers,
+        total_score: score,
+        result: 'qualified',
+        name: name,
+        phone: phone,
+        status: 'Novo',
+      });
 
-    setIsSubmitting(false);
-    setState('result');
+      // Preparar a mensagem para a Dra. Mônica
+      const message = `Olá Dra. Mônica Lucioli! Acabei de completar a análise no seu site.\n\n` +
+        `*Dados do Lead:*\n` +
+        `• Nome: ${name}\n` +
+        `• WhatsApp: ${phone}\n\n` +
+        `*Resumo do Perfil:*\n` +
+        `• Profissão: ${answers[1] || '-'}\n` +
+        `• Aposentou em: ${answers[3] || '-'}\n` +
+        `• Múltiplos vínculos: ${answers[4] || '-'}\n\n` +
+        `Gostaria de agendar meu atendimento inicial gratuito.`;
+
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/5532991652789?text=${encodedMessage}`;
+
+      // Redirecionar direto para o WhatsApp da Dra.
+      window.location.href = whatsappUrl;
+      
+    } catch (error) {
+      console.error('Erro ao processar lead:', error);
+      setState('result');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const toggleAudio = () => {
