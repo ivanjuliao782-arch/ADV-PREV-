@@ -217,7 +217,7 @@ export default function App() {
                 <div className="pt-4">
                   <button
                     onClick={() => setState('quiz')}
-                    className="btn-gold w-full md:w-auto flex items-center justify-center gap-3 px-12"
+                    className="btn-gold w-full md:w-auto flex items-center justify-center gap-3 px-12 animate-[pulse_2s_ease-in-out_infinite] hover:animate-none"
                   >
                     Verificar meu caso agora
                     <ChevronRight size={24} />
