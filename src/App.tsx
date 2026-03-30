@@ -92,6 +92,22 @@ export default function App() {
     }
   };
 
+  const handleLeadSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name || !phone) return;
+    setIsSubmitting(true);
+
+    try {
+      // Salvar submissão no banco (para o gestor ter o backup sempre)
+      await supabase.from('quiz_submissions').insert({
+        answers: answers,
+        total_score: score,
+        result: 'qualified',
+        name: name,
+        phone: phone,
+        status: 'Novo',
+      });
+
       // Preparar a mensagem curta e direta para o usuário enviar para a Dra.
       const message = `Olá Dra. Mônica Lucioli! Acabei de completar a análise no seu site e fui qualificado para a revisão.\n\n` +
         `Nome: ${name}\n` +
@@ -412,54 +428,40 @@ export default function App() {
               className="max-w-2xl mx-auto text-center space-y-8"
             >
               <div className="flex justify-center">
-                <AlertCircle size={100} className="text-text-muted opacity-50" />
+                <div className="w-20 h-20 bg-gold/10 rounded-full flex items-center justify-center border-2 border-gold/30">
+                  <AlertCircle size={40} className="text-gold" />
+                </div>
               </div>
               
               <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
-                Análise Concluída
+                Obrigado por participar!
               </h2>
 
-              <div className="bg-navy-light p-8 md:p-12 rounded-[2.5rem] border-2 border-white/5 space-y-6 shadow-2xl text-left">
-                <p className="text-xl md:text-2xl text-text-light/90 leading-relaxed mb-4">
-                  Agradecemos o seu interesse, mas seu perfil não se encaixa nos critérios desta revisão específica no momento.
+              <div className="bg-navy-light p-8 md:p-12 rounded-[2.5rem] border-2 border-white/5 space-y-8 shadow-2xl">
+                <p className="text-xl md:text-3xl text-white font-medium leading-relaxed">
+                  Esta análise é direcionada a aposentados até 2019, nas áreas de educação e saúde.
                 </p>
                 
-                <p className="text-lg md:text-xl text-gold font-bold uppercase tracking-wider mb-2">
-                  Esta revisão é destinada apenas a:
+                <p className="text-xl md:text-2xl text-text-light/80 italic">
+                  Agradecemos sua compreensão.
                 </p>
-                
-                <ul className="space-y-4">
-                  <li className="flex items-start gap-3 text-lg md:text-xl text-text-light/80">
-                    <span className="text-gold mt-1">•</span>
-                    Professores ou Profissionais da Saúde.
-                  </li>
-                  <li className="flex items-start gap-3 text-lg md:text-xl text-text-light/80">
-                    <span className="text-gold mt-1">•</span>
-                    Já aposentados (antes ou em 2019).
-                  </li>
-                  <li className="flex items-start gap-3 text-lg md:text-xl text-text-light/80 font-bold text-white">
-                    <span className="text-gold mt-1">•</span>
-                    Que trabalharam em mais de um emprego ao mesmo tempo.
-                  </li>
-                </ul>
 
-                <p className="text-base md:text-lg text-text-muted mt-6 italic">
-                  Caso queira analisar outro benefício, recomendamos procurar um advogado de sua confiança.
-                </p>
+                <div className="pt-6">
+                  <button
+                    onClick={() => {
+                      setState('hero');
+                      setCurrentQuestionIndex(0);
+                      setScore(0);
+                      setAnswers({});
+                      setName('');
+                      setPhone('');
+                    }}
+                    className="w-full py-5 text-xl font-bold bg-white/5 hover:bg-white/10 text-white rounded-2xl transition-all border border-white/10"
+                  >
+                    Voltar ao Início
+                  </button>
+                </div>
               </div>
-              <button
-                onClick={() => {
-                  setState('hero');
-                  setCurrentQuestionIndex(0);
-                  setScore(0);
-                  setAnswers({});
-                  setName('');
-                  setPhone('');
-                }}
-                className="text-gold border-b border-gold pb-1 hover:text-gold-hover hover:border-gold-hover transition-colors"
-              >
-                Voltar ao início
-              </button>
             </motion.div>
           )}
         </AnimatePresence>
