@@ -137,11 +137,28 @@ export default function App() {
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
+        setIsPlaying(false);
       } else {
-        audioRef.current.playbackRate = 1.3;
-        audioRef.current.play();
+        // Forçar o carregamento para garantir que o Safari pegue o arquivo novo
+        audioRef.current.load();
+        
+        const playPromise = audioRef.current.play();
+        
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            // No iPhone, a velocidade deve ser setada APÓS o play começar
+            if (audioRef.current) {
+              audioRef.current.playbackRate = 1.3;
+              setIsPlaying(true);
+            }
+          }).catch(error => {
+            console.error("Erro na reprodução do áudio:", error);
+            // Fallback: tenta play simples sem aceleração se der erro
+            audioRef.current?.play();
+            setIsPlaying(true);
+          });
+        }
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
@@ -231,7 +248,8 @@ export default function App() {
                   </div>
                   <audio
                     ref={audioRef}
-                    src="/audio-advogada.wav"
+                    src="/audio-monica-v3.wav"
+                    preload="auto"
                     onEnded={() => setIsPlaying(false)}
                   />
                 </div>
