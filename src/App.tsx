@@ -154,7 +154,7 @@ export default function App() {
                 <img 
                   src="/foto-doutora.jpeg" 
                   alt="Dra. Mônica Lucioli" 
-                  className="w-full h-full object-cover lg:object-contain object-top lg:object-right opacity-90"
+                  className="w-full h-full object-cover lg:object-contain object-top lg:object-right opacity-90 blur-[1.5px]"
                   referrerPolicy="no-referrer"
                   loading="eager"
                 />
