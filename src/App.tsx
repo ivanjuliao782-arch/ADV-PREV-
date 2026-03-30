@@ -159,6 +159,8 @@ export default function App() {
                   loading="eager"
                 />
                 
+                {/* Camada escura semi-transparente sobre a foto inteira para dar destaque à copy */}
+                <div className="absolute inset-0 bg-black/40" />
                 {/* Gradient da Esquerda (Desktop) para fazer o texto brilhar na esquerda e sumir a borda da foto */}
                 <div className="hidden lg:block absolute inset-0 bg-gradient-to-r from-navy via-navy/90 to-transparent w-3/4" />
 
