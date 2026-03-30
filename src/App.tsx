@@ -176,7 +176,7 @@ export default function App() {
               <div className="relative z-10 w-full lg:max-w-xl p-6 md:p-12 lg:p-16 pt-8 md:pt-12 lg:pt-16">
                 <header>
                   <h2 className="text-gold text-xl md:text-2xl lg:text-3xl font-bold tracking-widest uppercase drop-shadow-xl mb-1 lg:mb-2">
-                    Mônica Lucioli
+                    Dra. Mônica Lucioli
                   </h2>
                   <p className="text-white/90 font-medium text-xs md:text-base lg:text-xl uppercase tracking-widest drop-shadow-lg">
                     Advocacia Previdenciária
